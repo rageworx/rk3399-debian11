@@ -218,6 +218,8 @@ rm /lib/systemd/system/wpa_supplicant@.service
 
 echo $VERSION_NUMBER-$VERSION > /etc/version
 
+systemctl enable mountboot.service
+
 #------remove unused packages------------
 apt remove --purge -fy linux-firmware*
 
