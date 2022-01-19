@@ -135,6 +135,18 @@ fi
 # enable adbd service
 #service adbd start
 
+# set act-led trigger function
+cmdline=$(cat /proc/cmdline)
+storage=`echo $cmdline|awk '{print match($0,"storagemedia=emmc")}'`;
+
+if [ $storage -gt 0 ]; then
+    #emmc
+    echo mmc0 > /sys/class/leds/act-led/trigger
+else
+    #sdcard
+    echo mmc1 > /sys/class/leds/act-led/trigger
+fi
+
 # set cpu governor and frequence
 CPU_GOVERNOR=$(cat /boot/config.txt | grep 'cpu_governor' | cut -d '=' -f2)
 A53_MINFREQ=$(cat /boot/config.txt | grep 'a53_minfreq' | cut -d '=' -f2)
