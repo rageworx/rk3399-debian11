@@ -71,7 +71,7 @@ elif [ "$ARCH" == "arm64"  ]; then
 	sudo cp /usr/bin/qemu-aarch64-static $TARGET_ROOTFS_DIR/usr/bin/
 fi
 
-sudo cp -f /etc/resolv.conf $TARGET_ROOTFS_DIR/etc/
+#sudo cp -f /etc/resolv.conf $TARGET_ROOTFS_DIR/etc/
 
 sudo mount -o bind /dev $TARGET_ROOTFS_DIR/dev
 
