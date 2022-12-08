@@ -18,7 +18,7 @@ if [ ! $VERSION ]; then
 	VERSION="release"
 fi
 
-if [ ! -e linaro-bullseye-alip-*.tar.gz ]; then
+if [ ! -e linaro-bullseye-$ARCH.tar.gz ]; then
 	echo "\033[36m Run mk-base-debian.sh first \033[0m"
 	exit -1
 fi
@@ -30,7 +30,7 @@ finish() {
 trap finish ERR
 
 echo -e "\033[36m Extract image \033[0m"
-sudo tar -xpf linaro-bullseye-alip-*.tar.gz
+sudo tar -xpf linaro-bullseye-$ARCH.tar.gz
 
 # packages folder
 sudo mkdir -p $TARGET_ROOTFS_DIR/packages
