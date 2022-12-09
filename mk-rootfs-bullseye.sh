@@ -216,9 +216,19 @@ systemctl mask systemd-networkd-wait-online.service
 systemctl mask NetworkManager-wait-online.service
 rm /lib/systemd/system/wpa_supplicant@.service
 
+#-------ASUS customization start-------
 echo $VERSION_NUMBER-$VERSION > /etc/version
 
+#---------------tinker-power-management--------------
+\${APT_INSTALL} libncurses5-dev libncursesw5-dev
+cd /usr/local/share/tinker-power-management
+gcc tinker-power-management.c -o tinker-power-management -lncursesw
+mv tinker-power-management /usr/bin
+cd /
+
 systemctl enable mountboot.service
+
+#-------ASUS customization end-------
 
 #------remove unused packages------------
 apt remove --purge -fy linux-firmware*
