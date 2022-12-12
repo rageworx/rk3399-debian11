@@ -228,6 +228,10 @@ cd /
 
 systemctl enable mountboot.service
 
+# Change the background for ASUS Tinker Board
+rm -rf /usr/share/images/desktop-base/default
+ln -s /etc/ASUS/ASUS-2017-Tinkerboard-v1-wp-02-1920x1080.jpg /usr/share/images/desktop-base/default
+
 #-------ASUS customization end-------
 
 #------remove unused packages------------
