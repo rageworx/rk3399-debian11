@@ -232,6 +232,12 @@ systemctl enable mountboot.service
 rm -rf /usr/share/images/desktop-base/default
 ln -s /etc/ASUS/ASUS-2017-Tinkerboard-v1-wp-02-1920x1080.jpg /usr/share/images/desktop-base/default
 
+# Test tool
+if [ "$VERSION" == "debug" ]; then
+	systemctl enable test.service
+	sed -i -e 's/x-shellscript=vim.desktop/x-shellscript=debian-uxterm.desktop/g' /usr/share/applications/mimeinfo.cache
+fi
+
 #-------ASUS customization end-------
 
 #------remove unused packages------------
