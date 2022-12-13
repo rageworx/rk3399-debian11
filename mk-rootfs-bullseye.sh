@@ -232,6 +232,11 @@ systemctl enable mountboot.service
 rm -rf /usr/share/images/desktop-base/default
 ln -s /etc/ASUS/ASUS-2017-Tinkerboard-v1-wp-02-1920x1080.jpg /usr/share/images/desktop-base/default
 
+# Change default Terminal emulator to xfce4-terminal
+\${APT_INSTALL} xfce4-terminal
+sudo update-alternatives --install /usr/bin/x-terminal-emulator x-terminal-emulator /usr/bin/xfce4-terminal 40
+update-alternatives --auto x-terminal-emulator
+
 # Test tool
 if [ "$VERSION" == "debug" ]; then
 	systemctl enable test.service
