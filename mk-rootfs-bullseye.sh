@@ -219,6 +219,10 @@ rm /lib/systemd/system/wpa_supplicant@.service
 #-------ASUS customization start-------
 echo $VERSION_NUMBER-$VERSION > /etc/version
 
+# Install thunar-volman and auto mount storage
+\${APT_INSTALL} thunar-volman
+cp /etc/ASUS/thunar-volman.xml /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/thunar-volman.xml
+
 #---------------tinker-power-management--------------
 \${APT_INSTALL} libncurses5-dev libncursesw5-dev
 cd /usr/local/share/tinker-power-management
