@@ -247,6 +247,8 @@ if [ "$VERSION" == "debug" ]; then
 	sed -i -e 's/x-shellscript=vim.desktop/x-shellscript=debian-uxterm.desktop/g' /usr/share/applications/mimeinfo.cache
 fi
 
+\${APT_INSTALL} xfce4-notifyd
+
 #-------ASUS customization end-------
 
 #------remove unused packages------------
