@@ -22,6 +22,8 @@ if [ ! $VERSION ]; then
 	VERSION="release"
 fi
 
+echo -e "\033[36m Building for $VERSION \033[0m"
+
 if [ ! -e linaro-bullseye-$ARCH.tar.gz ]; then
 	echo "\033[36m Run mk-base-debian.sh first \033[0m"
 	exit -1
@@ -52,16 +54,16 @@ sudo cp -rf overlay-firmware/usr/lib/firmware/* $TARGET_ROOTFS_DIR/tmp_firmware
 # adb, video, camera  test file
 if [ "$VERSION" == "debug" ]; then
 	sudo cp -rf overlay-debug/* $TARGET_ROOTFS_DIR/
+	# adb
+	if [[ "$ARCH" == "armhf" && "$VERSION" == "debug" ]]; then
+		sudo cp -f overlay-debug/usr/local/share/adb/adbd-32 $TARGET_ROOTFS_DIR/usr/bin/adbd
+	elif [[ "$ARCH" == "arm64" && "$VERSION" == "debug" ]]; then
+		sudo cp -f overlay-debug/usr/local/share/adb/adbd-64 $TARGET_ROOTFS_DIR/usr/bin/adbd
+	fi
 fi
+
 ## hack the serial
 sudo cp -f overlay/usr/lib/systemd/system/serial-getty@.service $TARGET_ROOTFS_DIR/usr/lib/systemd/system/serial-getty@.service
-
-# adb
-if [[ "$ARCH" == "armhf" && "$VERSION" == "debug" ]]; then
-	sudo cp -f overlay-debug/usr/local/share/adb/adbd-32 $TARGET_ROOTFS_DIR/usr/bin/adbd
-elif [[ "$ARCH" == "arm64" && "$VERSION" == "debug" ]]; then
-	sudo cp -f overlay-debug/usr/local/share/adb/adbd-64 $TARGET_ROOTFS_DIR/usr/bin/adbd
-fi
 
 # bt/wifi firmware
 sudo mkdir -p $TARGET_ROOTFS_DIR/system/lib/modules/
@@ -85,6 +87,9 @@ fi
 sudo mount -o bind /dev $TARGET_ROOTFS_DIR/dev
 
 cat << EOF | sudo chroot $TARGET_ROOTFS_DIR
+
+echo "deb http://mirrors.ustc.edu.cn/debian/ bullseye-backports main contrib non-free" >> /etc/apt/sources.list
+echo "deb-src http://mirrors.ustc.edu.cn/debian/ bullseye-backports main contrib non-free" >> /etc/apt/sources.list
 
 apt-get update
 apt-get upgrade -y
@@ -147,6 +152,10 @@ echo exit 101 > /usr/sbin/policy-rc.d
 chmod +x /usr/sbin/policy-rc.d
 \${APT_INSTALL} blueman
 rm -f /usr/sbin/policy-rc.d
+
+#------------------blueman------------
+echo -e "\033[36m Install blueman.................... \033[0m"
+\${APT_INSTALL} /packages/blueman/*.deb
 
 #------------------rkwifibt------------
 echo -e "\033[36m Install rkwifibt.................... \033[0m"
