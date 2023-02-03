@@ -62,6 +62,16 @@ if [ "$VERSION" == "debug" ]; then
 	fi
 fi
 
+# gpio library
+sudo rm -rf $TARGET_ROOTFS_DIR/usr/local/share/gpio_lib_c_rk3399
+sudo rm -rf $TARGET_ROOTFS_DIR/usr/local/share/gpio_lib_python_rk3399
+sudo cp -rf overlay-debug/usr/local/share/gpio_lib_c_rk3399 $TARGET_ROOTFS_DIR/usr/local/share/gpio_lib_c_rk3399
+sudo cp -rf overlay-debug/usr/local/share/gpio_lib_python_rk3399 $TARGET_ROOTFS_DIR/usr/local/share/gpio_lib_python_rk3399
+
+# mraa library
+sudo rm -rf $TARGET_ROOTFS_DIR/usr/local/share/mraa
+sudo cp -rf overlay-debug/usr/local/share/mraa $TARGET_ROOTFS_DIR/usr/local/share/mraa
+
 ## hack the serial
 sudo cp -f overlay/usr/lib/systemd/system/serial-getty@.service $TARGET_ROOTFS_DIR/usr/lib/systemd/system/serial-getty@.service
 
@@ -153,6 +163,41 @@ rm -f /usr/sbin/policy-rc.d
 #------------------blueman------------
 echo -e "\033[36m Install blueman.................... \033[0m"
 \${APT_INSTALL} /packages/blueman/*.deb
+
+#---------------gpio library --------------
+\${APT_INSTALL} python-dev
+# For gpio wiring c library
+chmod a+x /usr/local/share/gpio_lib_c_rk3399
+cd /usr/local/share/gpio_lib_c_rk3399
+./build
+# For gpio python library
+cd /usr/local/share/gpio_lib_python_rk3399/
+python setup.py install
+python3 setup.py install
+cd /
+
+#---------------mraa library --------------
+apt-get install -y swig4.0
+chmod a+x /usr/local/share/mraa
+cd /usr/local/share/mraa
+mkdir build
+cd build
+cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr --BUILDARCH=aarch64 ..
+make
+make install
+cd /
+
+#---------------40 pin permission for user --------------
+groupadd gpiouser
+adduser linaro gpiouser
+groupadd i2cuser
+adduser linaro i2cuser
+groupadd spidevuser
+adduser linaro spidevuser
+groupadd uartuser
+adduser linaro uartuser
+groupadd pwmuser
+adduser linaro pwmuser
 
 #------------------rkwifibt------------
 echo -e "\033[36m Install rkwifibt.................... \033[0m"
