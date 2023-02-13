@@ -35,6 +35,8 @@ DP_SYS="/sys/class/drm/card0-DP-1"
 
 HDMI_XRANDR_CONFIG="/boot/display/hdmi/xrandr.cfg"
 DP_XRANDR_CONFIG="/boot/display/dp/xrandr.cfg"
+HDMI_XRANDR_CONFIG_UNPLUG="/boot/display/hdmi/xrandr_unplug.cfg"
+DP_XRANDR_CONFIG_UNPLUG="/boot/display/dp/xrandr_unplug.cfg"
 
 HDMI_HOTPLUG_CONFIG="/boot/display/hdmi/hdmi_plug_flag.cfg"
 DP_HOTPLUG_CONFIG="/boot/display/dp/dp_plug_flag.cfg"
@@ -54,10 +56,11 @@ dp_status=$(cat /sys/class/drm/card0-DP-1/status)
 if [ $hdmi_status = "disconnected" ]; then
 	if [ -f $HDMI_HOTPLUG_CONFIG ]; then
 		if [ "$(cat $HDMI_HOTPLUG_CONFIG)" != "Plug_Out" ]; then
-			#if [ "$(cat $HDMI_MODE_NODE)" != "" ]; then
-			#	HDMI_SAVE_MODE="$(cat $HDMI_MODE_NODE |cut -d'p' -f1)"
-			#	su $user -c "echo $HDMI_SAVE_MODE" > $HDMI_XRANDR_CONFIG
-			#fi
+			if [ -f $HDMI_XRANDR_CONFIG ]; then
+				if [ "$(cat $HDMI_XRANDR_CONFIG)" != "" ]; then
+					su $user -c "echo $(cat $HDMI_XRANDR_CONFIG)" > $HDMI_XRANDR_CONFIG_UNPLUG
+				fi
+			fi
 		fi
 	fi
 	sudo -u $user xrandr --output $HDMI --off
@@ -68,10 +71,11 @@ fi
 if [ $dp_status = "disconnected" ]; then
 	if [ -f $DP_HOTPLUG_CONFIG ]; then
 		if [ "$(cat $DP_HOTPLUG_CONFIG)" != "Plug_Out" ]; then
-			#if [ "$(cat $DP_MODE_NODE)" != "" ]; then
-			#	DP_SAVE_MODE="$(cat $DP_MODE_NODE |cut -d'p' -f1)"
-			#	su $user -c "echo $DP_SAVE_MODE" > $DP_XRANDR_CONFIG
-			#fi
+			if [ -f $DP_XRANDR_CONFIG ]; then
+				if [ "$(cat $DP_XRANDR_CONFIG)" != "" ]; then
+					su $user -c "echo $(cat $DP_XRANDR_CONFIG)" > $DP_XRANDR_CONFIG_UNPLUG
+				fi
+			fi
 		fi
 	fi
 	sudo -u $user xrandr --output $DP --off
@@ -86,7 +90,7 @@ if [ $hdmi_status = "connected" ]; then
 		if [ "$(cat $HDMI_HOTPLUG_CONFIG)" = "Plug_Out" ]; then
 			if [ -f $HDMI_XRANDR_CONFIG ]; then
 				if grep -q $(cat $HDMI_XRANDR_CONFIG) $HDMI_MODES_NODE; then
-					sudo -u $user xrandr --output $HDMI --mode $(cat $HDMI_XRANDR_CONFIG)
+					sudo -u $user xrandr --output $HDMI --mode $(cat $HDMI_XRANDR_CONFIG_UNPLUG)
 				else
 					sudo -u $user xrandr --output $HDMI --auto
 				fi
@@ -108,7 +112,7 @@ if [ $dp_status = "connected" ]; then
 		if [ "$(cat $DP_HOTPLUG_CONFIG)" = "Plug_Out" ]; then
 			if [ -f $DP_XRANDR_CONFIG ]; then
 				if grep -q $(cat $DP_XRANDR_CONFIG) $DP_MODES_NODE; then
-					sudo -u $user xrandr --output $DP --mode $(cat $DP_XRANDR_CONFIG)
+					sudo -u $user xrandr --output $DP --mode $(cat $DP_XRANDR_CONFIG_UNPLUG)
 				else
 					sudo -u $user xrandr --output $DP --auto
 				fi
