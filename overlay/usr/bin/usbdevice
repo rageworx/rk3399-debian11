@@ -20,7 +20,7 @@ usb_get_started()
 }
 
 CONFIGFS_DIR=/sys/kernel/config
-USB_GROUP=rockchip
+USB_GROUP=asus
 USB_STRINGS_ATTR=strings/0x409
 USB_GADGET_DIR=$CONFIGFS_DIR/usb_gadget/$USB_GROUP
 USB_GADGET_STRINGS_DIR=$USB_GADGET_DIR/$USB_STRINGS_ATTR
@@ -44,16 +44,31 @@ usb_msg()
 usb_pid()
 {
 	case $1 in
-		ums)		echo 0x0000;;
-		mtp)		echo 0x0001;;
+		ums)		echo 0x7820;;
+		mtp)		echo 0x7772;;
 		uvc)		echo 0x0005;;
-		adb)		echo 0x0006;;
-		adb_mtp)	echo 0x0011;;
+		adb)		echo 0x7770;;
+		adb_mtp)	echo 0x7773;;
 		adb_ums)	echo 0x0018;;
 		uvc_adb)	echo 0x0015;;
 		uvc_ntb)	echo 0x0017;;
 		acm)		echo 0x1005;;
+		rndis)		echo 0x7774;;
+		adb_rndis)	echo 0x7775;;
 		*)		echo 0x0019;;
+	esac
+}
+
+usb_vid()
+{
+	case $1 in
+		ums)		echo 0x0b05;;
+		mtp)		echo 0x0b05;;
+		adb)		echo 0x0b05;;
+		adb_mtp)	echo 0x0b05;;
+		rndis)		echo 0x0b05;;
+		adb_rndis)	echo 0x0b05;;
+		*)		echo 0x2207;;
 	esac
 }
 
@@ -440,7 +455,7 @@ usb_init()
 	SERIAL=$(grep Serial /proc/cpuinfo | cut -d':' -f2)
 	echo ${SERIAL:-0123456789ABCDEF} > $USB_GADGET_STRINGS_DIR/serialnumber
 	echo $USB_GROUP  > $USB_GADGET_STRINGS_DIR/manufacturer
-	echo "rk3xxx"  > $USB_GADGET_STRINGS_DIR/product
+	echo "Tinker Board 2"  > $USB_GADGET_STRINGS_DIR/product
 
 	mkdir -p $USB_CONFIGS_DIR
 	echo 500 > $USB_CONFIGS_DIR/MaxPower
@@ -508,6 +523,8 @@ usb_prepare()
 		usb_stop
 	fi
 
+	# Update USB VID
+	echo "$(usb_vid "$USB_CONFIG")" > $USB_GADGET_DIR/idVendor
 	# Update USB PID
 	echo "$(usb_pid "$USB_CONFIG")" > $USB_GADGET_DIR/idProduct
 }
