@@ -130,6 +130,8 @@ gstreamer1.0-plugins-base-apps qtmultimedia5-examples
 echo -e "\033[36m Install camera.................... \033[0m"
 #\${APT_INSTALL} cheese v4l-utils
 \${APT_INSTALL} /packages/libv4l/*.deb
+\${APT_INSTALL} /packages/rkisp/*.deb
+cp /packages/rkisp/librkisp.so /usr/lib/
 
 #---------Xserver---------
 echo -e "\033[36m Install Xserver.................... \033[0m"
@@ -248,7 +250,6 @@ source ~/.bashrc
 #sed -i "/exit 0/i \ echo 3 > /sys/class/graphics/fb0/blank" /etc/rc.local
 
 cp /packages/libmali/libmali-*-x11*.deb /
-cp -rf /packages/rkisp/*.deb /
 cp -rf /packages/rkaiq/*.deb /
 #cp -rf /usr/lib/firmware/rockchip/ /
 
