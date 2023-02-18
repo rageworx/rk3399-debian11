@@ -12,6 +12,7 @@ apt
 apt-utils
 at-spi2-core
 #babeltrace
+bsdmainutils
 bash-completion
 bc
 binfmt-support
@@ -22,6 +23,7 @@ busybox
 bzip2
 ca-certificates
 can-utils
+cheese
 #chromium
 cmake
 console-setup
@@ -45,6 +47,7 @@ exfat-utils
 #extremetuxracer
 fbset
 file
+fonts-aenigma
 fonts-arphic-ukai
 fonts-arphic-uming
 fonts-freefont-ttf
@@ -88,6 +91,7 @@ initscripts
 input-utils
 iotop
 iperf
+iperf3
 iproute2
 iptables
 iputils-ping
@@ -97,6 +101,8 @@ kbd
 kmod
 less
 libc++1
+libncurses5-dev
+libncursesw5-dev
 #libxatracker2
 #libreoffice
 libgtk-3-dev
@@ -150,6 +156,7 @@ parole
 parole-dev
 parted
 pavucontrol
+pm-utils
 policykit-1
 powerdebug
 powertop
@@ -157,6 +164,7 @@ procps
 protobuf-compiler
 psmisc
 pulseaudio-module-bluetooth
+python-dev
 #python-libsoc
 #python-minimal
 #python-mraa
@@ -184,7 +192,10 @@ synaptic
 #sysv-rc-conf
 #thunderbird
 task-xfce-desktop
+thunar-volman
+ttf-wqy-zenhei
 trace-cmd
+triggerhappy
 udev
 unzip
 usb-modeswitch
@@ -207,11 +218,14 @@ x11-xserver-utils
 xfce4-battery-plugin
 #xfce4-diskperf-plugin
 #xfce4-mpc-plugin
+xfce4-notifyd
 #xfce4-session
 #xfce4-pulseaudio-plugin
 xfce4-power-manager
 #xfce4-power-manager-plugins
 xfce4-screenshooter
+xfce4-terminal
+xfonts-intl-chinese
 xinit
 xmms2-client-cli
 xmms2-plugin-mad

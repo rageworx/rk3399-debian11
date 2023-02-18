@@ -107,7 +107,7 @@ chmod +x /etc/rc.local
 export APT_INSTALL="apt-get install -fy --allow-downgrades"
 
 #---------------power management --------------
-\${APT_INSTALL} pm-utils triggerhappy bsdmainutils
+#\${APT_INSTALL} pm-utils triggerhappy bsdmainutils
 #cp /etc/Powermanager/triggerhappy.service  /lib/systemd/system/triggerhappy.service
 
 #---------------Rga--------------
@@ -128,7 +128,7 @@ gstreamer1.0-plugins-base-apps qtmultimedia5-examples
 
 #---------Camera---------
 echo -e "\033[36m Install camera.................... \033[0m"
-\${APT_INSTALL} cheese v4l-utils
+#\${APT_INSTALL} cheese v4l-utils
 \${APT_INSTALL} /packages/libv4l/*.deb
 
 #---------Xserver---------
@@ -165,7 +165,6 @@ echo -e "\033[36m Install blueman.................... \033[0m"
 \${APT_INSTALL} /packages/blueman/*.deb
 
 #---------------gpio library --------------
-\${APT_INSTALL} python-dev
 # For gpio wiring c library
 chmod a+x /usr/local/share/gpio_lib_c_rk3399
 cd /usr/local/share/gpio_lib_c_rk3399
@@ -236,8 +235,8 @@ echo -e "\033[36m Install Chinese fonts.................... \033[0m"
 
 source ~/.bashrc
 
-\${APT_INSTALL} ttf-wqy-zenhei fonts-aenigma
-\${APT_INSTALL} xfonts-intl-chinese
+#\${APT_INSTALL} ttf-wqy-zenhei fonts-aenigma
+#\${APT_INSTALL} xfonts-intl-chinese
 
 # HACK debian11.3 to fix bug
 \${APT_INSTALL} fontconfig --reinstall
@@ -271,11 +270,10 @@ rm /lib/systemd/system/wpa_supplicant@.service
 echo $VERSION_NUMBER-$VERSION > /etc/version
 
 # Install thunar-volman and auto mount storage
-\${APT_INSTALL} thunar-volman
 cp /etc/ASUS/thunar-volman.xml /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/thunar-volman.xml
 
 #---------------tinker-power-management--------------
-\${APT_INSTALL} libncurses5-dev libncursesw5-dev
+#\${APT_INSTALL} libncurses5-dev libncursesw5-dev
 cd /usr/local/share/tinker-power-management
 gcc tinker-power-management.c -o tinker-power-management -lncursesw
 mv tinker-power-management /usr/bin
@@ -288,7 +286,6 @@ rm -rf /usr/share/images/desktop-base/default
 ln -s /etc/ASUS/ASUS-2017-Tinkerboard-v1-wp-02-1920x1080.jpg /usr/share/images/desktop-base/default
 
 # Change default Terminal emulator to xfce4-terminal
-\${APT_INSTALL} xfce4-terminal
 sudo update-alternatives --install /usr/bin/x-terminal-emulator x-terminal-emulator /usr/bin/xfce4-terminal 40
 update-alternatives --auto x-terminal-emulator
 
@@ -297,8 +294,6 @@ if [ "$VERSION" == "debug" ]; then
 	systemctl enable test.service
 	sed -i -e 's/x-shellscript=vim.desktop/x-shellscript=debian-uxterm.desktop/g' /usr/share/applications/mimeinfo.cache
 fi
-
-\${APT_INSTALL} xfce4-notifyd
 
 #-------ASUS customization end-------
 
