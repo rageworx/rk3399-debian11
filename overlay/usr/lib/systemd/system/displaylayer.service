@@ -1,0 +1,12 @@
+#start
+[Unit]
+Description=Change layering order
+
+[Service]
+Type=simple
+ExecStart=/etc/init.d/displaylayer.sh
+
+[Install]
+WantedBy=graphical.target
+#end
+
