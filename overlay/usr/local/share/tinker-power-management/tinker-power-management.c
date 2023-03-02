@@ -108,19 +108,6 @@ void draw_square_A(void) {
 	pclose(fp);
 	mvwprintw(BOARDA, 8, 3,"Memory\t= %s", buffer);
 
-	fp = popen("lsblk | grep -w 'mmcblk1'; echo $?", "r");
-	memset(buffer, '\0', sizeof(buffer));
-	fgets(buffer, sizeof(buffer), fp);
-	pclose(fp);
-	if (atoi(buffer) == 0) {
-		fp = popen("lsblk | grep -w 'mmcblk1' | grep 'disk' | rev | cut -d ' ' -f5 | rev", "r");
-		memset(buffer, '\0', sizeof(buffer));
-		fgets(buffer, sizeof(buffer), fp);
-		pclose(fp);
-		mvwprintw(BOARDA, 9, 3,"Storage\t= eMMC(mmcblk1)\t\t%s", buffer);
-	} else
-		mvwprintw(BOARDA, 9, 3,"Storage\t= No eMMC(mmcblk1)");
-
 	fp = popen("lsblk | grep -w 'mmcblk0'; echo $?", "r");
 	memset(buffer, '\0', sizeof(buffer));
 	fgets(buffer, sizeof(buffer), fp);
@@ -130,9 +117,22 @@ void draw_square_A(void) {
 		memset(buffer, '\0', sizeof(buffer));
 		fgets(buffer, sizeof(buffer), fp);
 		pclose(fp);
-		mvwprintw(BOARDA, 10, 3,"\t\t  SD card(mmcblk0)\t%s", buffer);
+		mvwprintw(BOARDA, 9, 3,"Storage\t= eMMC(mmcblk0)\t\t%s", buffer);
 	} else
-		mvwprintw(BOARDA, 10, 3,"\t\t  No SD card(mmcblk0)\t     ");
+		mvwprintw(BOARDA, 9, 3,"Storage\t= No eMMC(mmcblk0)");
+
+	fp = popen("lsblk | grep -w 'mmcblk1'; echo $?", "r");
+	memset(buffer, '\0', sizeof(buffer));
+	fgets(buffer, sizeof(buffer), fp);
+	pclose(fp);
+	if (atoi(buffer) == 0) {
+		fp = popen("lsblk | grep -w 'mmcblk1' | grep 'disk' | rev | cut -d ' ' -f5 | rev", "r");
+		memset(buffer, '\0', sizeof(buffer));
+		fgets(buffer, sizeof(buffer), fp);
+		pclose(fp);
+		mvwprintw(BOARDA, 10, 3,"\t\t  SD card(mmcblk1)\t%s", buffer);
+	} else
+		mvwprintw(BOARDA, 10, 3,"\t\t  No SD card(mmcblk1)\t     ");
 
 	fp = popen("cat /etc/os-release | grep -w 'NAME=' | cut -d '\"' -f2", "r");
 	memset(buffer, '\0', sizeof(buffer));
@@ -937,19 +937,6 @@ void ddr_info(void) {
 	int reg;
 	int mem_total, mem_used, mem_usage;
 
-	fp = popen("lsblk | grep -w 'mmcblk1'; echo $?", "r");
-	memset(buffer, '\0', sizeof(buffer));
-	fgets(buffer, sizeof(buffer), fp);
-	pclose(fp);
-	if (atoi(buffer) == 0) {
-		fp = popen("lsblk | grep -w 'mmcblk1' | grep 'disk' | rev | cut -d ' ' -f5 | rev", "r");
-		memset(buffer, '\0', sizeof(buffer));
-		fgets(buffer, sizeof(buffer), fp);
-		pclose(fp);
-		mvwprintw(BOARDA, 9, 10,"\t= eMMC(mmcblk1)\t\t%s", buffer);
-	} else
-		mvwprintw(BOARDA, 9, 10,"\t= No eMMC(mmcblk1)");
-
 	fp = popen("lsblk | grep -w 'mmcblk0'; echo $?", "r");
 	memset(buffer, '\0', sizeof(buffer));
 	fgets(buffer, sizeof(buffer), fp);
@@ -959,9 +946,22 @@ void ddr_info(void) {
 		memset(buffer, '\0', sizeof(buffer));
 		fgets(buffer, sizeof(buffer), fp);
 		pclose(fp);
-		mvwprintw(BOARDA, 10, 3,"\t\t  SD card(mmcblk0)\t%s", buffer);
+		mvwprintw(BOARDA, 9, 10,"\t= eMMC(mmcblk0)\t\t%s", buffer);
 	} else
-		mvwprintw(BOARDA, 10, 3,"\t\t  No SD card(mmcblk0)\t     ");
+		mvwprintw(BOARDA, 9, 10,"\t= No eMMC(mmcblk0)");
+
+	fp = popen("lsblk | grep -w 'mmcblk1'; echo $?", "r");
+	memset(buffer, '\0', sizeof(buffer));
+	fgets(buffer, sizeof(buffer), fp);
+	pclose(fp);
+	if (atoi(buffer) == 0) {
+		fp = popen("lsblk | grep -w 'mmcblk1' | grep 'disk' | rev | cut -d ' ' -f5 | rev", "r");
+		memset(buffer, '\0', sizeof(buffer));
+		fgets(buffer, sizeof(buffer), fp);
+		pclose(fp);
+		mvwprintw(BOARDA, 10, 3,"\t\t  SD card(mmcblk1)\t%s", buffer);
+	} else
+		mvwprintw(BOARDA, 10, 3,"\t\t  No SD card(mmcblk1)\t     ");
 
 	box(BOARDA, 0, 0);
 
