@@ -108,6 +108,8 @@ DP_HOTPLUG_CONFIG="/boot/display/dp/dp_plug_flag.cfg"
 HDMI_XRANDR_CONFIG="/boot/display/hdmi/xrandr.cfg"
 DP_XRANDR_CONFIG="/boot/display/dp/xrandr.cfg"
 
+# Enable WOL function
+/etc/network/ethernet_wol.sh
 
 # first boot configure
 if [ ! -e "/usr/local/first_boot_flag" ] ;

@@ -110,6 +110,9 @@ export APT_INSTALL="apt-get install -fy --allow-downgrades"
 #\${APT_INSTALL} pm-utils triggerhappy bsdmainutils
 #cp /etc/Powermanager/triggerhappy.service  /lib/systemd/system/triggerhappy.service
 
+#---------------Ethernet---------------
+chmod 755 /etc/network/ethernet_wol.sh
+
 #---------------Rga--------------
 \${APT_INSTALL} /packages/rga2/*.deb
 
