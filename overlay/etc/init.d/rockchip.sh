@@ -26,7 +26,7 @@ install_packages() {
 		MALI=midgard-t86x-r18p0
 		ISP=rkisp
 		sed -i "s/always/none/g" /etc/X11/xorg.conf.d/20-modesetting.conf
-		[ -e /usr/lib/aarch64-linux-gnu/ ] && apt install -fy --allow-downgrades /camera_engine_$ISP*.deb
+		#[ -e /usr/lib/aarch64-linux-gnu/ ] && apt install -fy --allow-downgrades /camera_engine_$ISP*.deb
 		;;
         rk3328)
 		MALI=utgard-450
