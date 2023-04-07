@@ -111,6 +111,7 @@ export APT_INSTALL="apt-get install -fy --allow-downgrades"
 #cp /etc/Powermanager/triggerhappy.service  /lib/systemd/system/triggerhappy.service
 
 #---------------Audio---------------
+chmod 755 /etc/pulse/movesinks.sh
 chmod 755 /usr/lib/systemd/system-sleep/02pulseaudio-suspend
 chmod 755 /etc/audio/update_device_description.sh
 
