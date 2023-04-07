@@ -224,3 +224,6 @@ hwclock --systohc
 
 # Enable WOL function
 /etc/network/ethernet_wol.sh
+
+# Update devices desctiption for audio
+/etc/audio/update_device_description.sh

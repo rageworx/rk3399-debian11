@@ -112,6 +112,7 @@ export APT_INSTALL="apt-get install -fy --allow-downgrades"
 
 #---------------Audio---------------
 chmod 755 /usr/lib/systemd/system-sleep/02pulseaudio-suspend
+chmod 755 /etc/audio/update_device_description.sh
 
 #---------------Ethernet---------------
 chmod 755 /etc/network/ethernet_wol.sh
