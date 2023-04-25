@@ -1,12 +1,39 @@
 #!/bin/bash
 
-version=2.0
+version=2.1
 
 log()
 {
-	echo $1 | tee -a $logfile | sudo tee $logfile2
+	echo $1 | sudo tee -a $logfile | sudo tee $logfile2
 	logger -t BurnIn "$1"
 }
+
+declare -A mmc_type_group
+for i in `ls /sys/bus/mmc/devices/`
+do
+	mmc_type_group[$i]=`cat /sys/bus/mmc/devices/$i/type`
+done
+
+return_emmc_dev() {
+	for i in "${!mmc_type_group[@]}"
+	do
+		if [[ "${mmc_type_group[$i]}" == "MMC" ]];then
+			echo | ls /sys/bus/mmc/devices/$i/block/
+		fi
+	done
+}
+
+return_sd_dev() {
+	for i in "${!mmc_type_group[@]}"
+	do
+		if [[ "${mmc_type_group[$i]}" == "SD" ]];then
+			echo | ls /sys/bus/mmc/devices/$i/block/
+		fi
+	done
+}
+
+emmcdev=`return_emmc_dev`
+sddev=`return_sd_dev`
 
 select_test_item()
 {
@@ -73,14 +100,20 @@ ddr_test()
 
 emmc_stress_test()
 {
-	sudo killall emmc_stress_test.sh > /dev/null 2>&1
-	sudo bash $SCRIPTPATH/test/emmc_stress_test.sh $SCRIPTPATH $1
+	if [ -z "$emmcdev" ];
+	then
+		echo "No eMMC"
+		exit
+	else
+		sudo killall emmc_stress_test.sh > /dev/null 2>&1
+		sudo bash $SCRIPTPATH/test/emmc_stress_test.sh $emmcdev $logfile
+	fi
 }
 
 sd_card_stress_test()
 {
 	killall sd_card_stress_test.sh > /dev/null 2>&1
-	sudo bash $SCRIPTPATH/test/sd_card_stress_test.sh $SCRIPTPATH $1
+	sudo bash $SCRIPTPATH/test/sd_card_stress_test.sh $sddev $logfile
 }
 
 network_stress_test()
@@ -117,7 +150,7 @@ CPU="stressapptest"
 GPU="glmark2-es2"
 DDR="memtester"
 EMMC="emmc_stress_test.sh"
-SD="sd_card_stress_test.sh"
+SD="sd_card"
 Network="network_stress_test.sh"
 #NPU="npu_stress.sh"
 
@@ -173,12 +206,26 @@ case $test_item in
 		ddr_test 1GB
 		;;
 	4)
-		info_view eMMC_RW
-		emmc_stress_test -a
+		if [ -z "$emmcdev" ];
+		then
+			echo "No eMMC"
+			exit
+		else
+			info_view eMMC_RW
+			logfile="$SCRIPTPATH/$now"_emmc.txt
+			emmc_stress_test -a
+		fi
 		;;
 	5)
-		info_view SD_RW
-		sd_card_stress_test -a
+		if [ -z "$sddev" ];
+		then
+			echo "No SD card"
+			exit
+		else
+			info_view SD_RW
+			logfile="$SCRIPTPATH/$now"_sd.txt
+			sd_card_stress_test -a
+		fi
 		;;
 	6)
 		logfile="$SCRIPTPATH/$now"_network.txt
@@ -230,7 +277,7 @@ while true; do
 	cur_freq4=$(echo "scale=2; $cur_freq4/1000000" | bc)
 	gpu_freq=`cat /sys/class/devfreq/ff9a0000.gpu/cur_freq`
 	gpu_freq=$(echo "scale=2; $gpu_freq/1000000" | bc)
-	ddr_freq=$(sudo cat /sys/kernel/debug/clk/clk_summary | grep sclk_ddrc | awk '{print $4}')
+	ddr_freq=$(sudo cat /sys/class/devfreq/dmc/cur_freq)
 	ddr_freq=$(echo "scale=2; $ddr_freq/1000000" | bc)
 
 	log ""
