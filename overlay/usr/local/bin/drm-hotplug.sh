@@ -128,4 +128,18 @@ if [ $dp_status = "connected" ]; then
 	su $user -c "echo Plug_In" > $DP_HOTPLUG_CONFIG
 fi
 
+# Audio : switch audio output devices when HDMI or DP hot-plug
+
+echo "Hot-Plug : hdmi_status = $hdmi_status, dp_status = $dp_status"
+
+if [ $hdmi_status = "connected" ]
+then
+	/etc/pulse/movesinks.sh "alsa_output.platform-hdmi-sound.stereo-fallback"
+elif [ $dp_status = "connected" ]
+then
+	/etc/pulse/movesinks.sh "alsa_output.platform-dp-sound.stereo-fallback"
+else
+	/etc/pulse/movesinks.sh "alsa_output.platform-hdmi-sound.stereo-fallback"
+fi
+
 exit 0
