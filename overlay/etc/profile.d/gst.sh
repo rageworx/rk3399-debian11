@@ -48,7 +48,7 @@ export GST_V4L2SRC_DEFAULT_DEVICE=/dev/video-camera0
 export GST_V4L2SRC_RK_DEVICES=_mainpath:_selfpath:_bypass:_scale
 
 # Max resolution for v4l2src
-export GST_V4L2SRC_MAX_RESOLUTION=3840x2160
+export GST_V4L2SRC_MAX_RESOLUTION=4056x3040
 
 # Preferred sinks for playbin3(autoaudiosink/autovideosink) and playbin.
 # export AUTOAUDIOSINK_PREFERRED=alsasink
