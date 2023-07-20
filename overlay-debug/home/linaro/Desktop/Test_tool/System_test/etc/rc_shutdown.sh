@@ -8,6 +8,7 @@ echo "########## Shutdown device from test_shutdown.sh ##########"
 echo "########## shutdown_times = $times  ##########"
 ((times+=1))
 echo "shutdown_times = "$times > /etc/shutdown_times.txt
+echo 0 > /sys/class/rtc/rtc0/wakealarm
 echo +40 > /sys/class/rtc/rtc0/wakealarm
 #systemctl poweroff
 poweroff -f
