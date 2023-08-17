@@ -244,12 +244,18 @@ case $test_item in
 		memtest
 		;;
 	*)
+		ddr_size=`cat /proc/meminfo | grep MemTotal | awk '{print $2}'`
+		if [ $ddr_size -gt 2097152 ]; then
+			ddr_size=256MB
+		else
+			ddr_size=64MB
+		fi
 		check_system_status=true
 		logfile="$SCRIPTPATH/$now"_BurnIn.txt
 		info_view BurnIn
 		cpu_freq_stress_test
 		gpu_test
-		ddr_test 256MB
+		ddr_test $ddr_size
 		emmc_stress_test -a > /dev/null 2>&1 &
 		sd_card_stress_test -a > /dev/null 2>&1 &
 		network_stress_test > /dev/null 2>&1 &
