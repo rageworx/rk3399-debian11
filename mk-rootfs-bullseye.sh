@@ -72,9 +72,6 @@ sudo cp -rf overlay-debug/usr/local/share/gpio_lib_python_rk3399 $TARGET_ROOTFS_
 sudo rm -rf $TARGET_ROOTFS_DIR/usr/local/share/mraa
 sudo cp -rf overlay-debug/usr/local/share/mraa $TARGET_ROOTFS_DIR/usr/local/share/mraa
 
-## hack the serial
-sudo cp -f overlay/usr/lib/systemd/system/serial-getty@.service $TARGET_ROOTFS_DIR/usr/lib/systemd/system/serial-getty@.service
-
 # bt/wifi firmware
 sudo mkdir -p $TARGET_ROOTFS_DIR/system/lib/modules/
 sudo mkdir -p $TARGET_ROOTFS_DIR/vendor/etc
@@ -339,5 +336,8 @@ rm -rf /packages/
 
 
 EOF
+
+## hack the serial
+sudo cp -f overlay/usr/lib/systemd/system/serial-getty@.service $TARGET_ROOTFS_DIR/usr/lib/systemd/system/serial-getty@.service
 
 sudo umount $TARGET_ROOTFS_DIR/dev
