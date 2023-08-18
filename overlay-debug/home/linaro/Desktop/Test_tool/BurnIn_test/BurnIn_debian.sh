@@ -80,10 +80,10 @@ high_performance()
 	sudo bash $SCRIPTPATH/test/high_performance.sh $thermal > /dev/null 2>&1
 }
 
-cpu_freq_stress_test()
+cpu_stress_test()
 {
 	sudo killall stressapptest > /dev/null 2>&1
-	sudo bash $SCRIPTPATH/test/cpu_freq_stress_test.sh 864000 > /dev/null 2>&1 &
+	sudo bash $SCRIPTPATH/test/cpu_stress_test.sh 864000 > /dev/null 2>&1 &
 }
 
 gpu_test()
@@ -191,7 +191,7 @@ case $test_item in
 		check_system_status=true
 		logfile="$SCRIPTPATH/$now"_cpu.txt
 		info_view CPU
-		cpu_freq_stress_test
+		cpu_stress_test
 		;;
 	2)
 		check_system_status=true
@@ -253,7 +253,7 @@ case $test_item in
 		check_system_status=true
 		logfile="$SCRIPTPATH/$now"_BurnIn.txt
 		info_view BurnIn
-		cpu_freq_stress_test
+		cpu_stress_test
 		gpu_test
 		ddr_test $ddr_size
 		emmc_stress_test -a > /dev/null 2>&1 &

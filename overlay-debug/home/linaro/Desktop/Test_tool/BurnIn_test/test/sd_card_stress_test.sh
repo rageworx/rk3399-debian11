@@ -33,9 +33,15 @@ get_mount_point()
 				exit
 			else
 				log "$TAG($mmcdev) detect but not mounted"
-				log "File manager format not supported"
-				log "Please manually format $TAG($mmcdev) to FAT32, exit test!!"
-				exit
+				mount /dev/${mmcdev}p1 /mnt/
+				mount_point=$(cat /proc/mounts | grep $mmcdev | awk '{print $2}')
+				mount_point=$(echo $mount_point | awk '{print $1}')
+				echo mount_point = $mount_point
+				if [[ -z $mount_point ]]; then
+					log "File manager format not supported"
+					log "Please manually format $TAG($mmcdev) to FAT32, exit test!!"
+					exit
+				fi
 			fi
 		fi
 
