@@ -40,26 +40,20 @@ sudo tar -xpf linaro-bullseye-$ARCH.tar.gz
 
 # packages folder
 sudo mkdir -p $TARGET_ROOTFS_DIR/packages
-sudo cp -rf packages/$ARCH/* $TARGET_ROOTFS_DIR/packages
+sudo cp -rpf packages/$ARCH/* $TARGET_ROOTFS_DIR/packages
 
 # overlay folder
-sudo cp -rf overlay/* $TARGET_ROOTFS_DIR/
+sudo cp -rpf overlay/* $TARGET_ROOTFS_DIR/
 
 # overlay-firmware folder
-sudo cp -rf overlay-firmware/* $TARGET_ROOTFS_DIR/
+sudo cp -rpf overlay-firmware/* $TARGET_ROOTFS_DIR/
 sudo mkdir -p $TARGET_ROOTFS_DIR/tmp_firmware
 sudo cp -rf overlay-firmware/usr/lib/firmware/* $TARGET_ROOTFS_DIR/tmp_firmware
 
 # overlay-debug folder
 # adb, video, camera  test file
 if [ "$VERSION" == "debug" ]; then
-	sudo cp -rf overlay-debug/* $TARGET_ROOTFS_DIR/
-	# adb
-	if [[ "$ARCH" == "armhf" && "$VERSION" == "debug" ]]; then
-		sudo cp -f overlay-debug/usr/local/share/adb/adbd-32 $TARGET_ROOTFS_DIR/usr/bin/adbd
-	elif [[ "$ARCH" == "arm64" && "$VERSION" == "debug" ]]; then
-		sudo cp -f overlay-debug/usr/local/share/adb/adbd-64 $TARGET_ROOTFS_DIR/usr/bin/adbd
-	fi
+	sudo cp -rpf overlay-debug/* $TARGET_ROOTFS_DIR/
 fi
 
 # gpio library
@@ -93,7 +87,20 @@ fi
 
 sudo mount -o bind /dev $TARGET_ROOTFS_DIR/dev
 
+ID=$(stat --format %u $TARGET_ROOTFS_DIR)
+
 cat << EOF | sudo chroot $TARGET_ROOTFS_DIR
+
+# Fixup owners
+if [ "$ID" -ne 0 ]; then
+       find / -user $ID -exec chown -h 0:0 {} \;
+fi
+for u in \$(ls /home/); do
+	chown -h -R \$u:\$u /home/\$u
+done
+
+echo "deb http://mirrors.ustc.edu.cn/debian/ bullseye-backports main contrib non-free" >> /etc/apt/sources.list
+echo "deb-src http://mirrors.ustc.edu.cn/debian/ bullseye-backports main contrib non-free" >> /etc/apt/sources.list
 
 apt-get update
 apt-get upgrade -y
@@ -102,6 +109,9 @@ chmod o+x /usr/lib/dbus-1.0/dbus-daemon-launch-helper
 chmod +x /etc/rc.local
 
 export APT_INSTALL="apt-get install -fy --allow-downgrades"
+
+# enter root username without password
+sed -i "s~\(^ExecStart=.*\)~# \1\nExecStart=-/bin/sh -c '/bin/bash -l </dev/%I >/dev/%I 2>\&1'~" /usr/lib/systemd/system/serial-getty@.service
 
 #---------------power management --------------
 #\${APT_INSTALL} pm-utils triggerhappy bsdmainutils
@@ -137,6 +147,7 @@ echo -e "\033[36m Install camera.................... \033[0m"
 \${APT_INSTALL} /packages/libv4l/*.deb
 \${APT_INSTALL} /packages/rkisp/*.deb
 cp /packages/rkisp/librkisp.so /usr/lib/
+\${APT_INSTALL} /packages/cheese/*.deb
 
 #---------Xserver---------
 echo -e "\033[36m Install Xserver.................... \033[0m"
@@ -334,10 +345,6 @@ rm -rf /var/lib/apt/lists/*
 rm -rf /var/cache/
 rm -rf /packages/
 
-
 EOF
-
-## hack the serial
-sudo cp -f overlay/usr/lib/systemd/system/serial-getty@.service $TARGET_ROOTFS_DIR/usr/lib/systemd/system/serial-getty@.service
 
 sudo umount $TARGET_ROOTFS_DIR/dev
