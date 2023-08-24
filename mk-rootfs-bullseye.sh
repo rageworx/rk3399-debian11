@@ -99,9 +99,6 @@ for u in \$(ls /home/); do
 	chown -h -R \$u:\$u /home/\$u
 done
 
-echo "deb http://mirrors.ustc.edu.cn/debian/ bullseye-backports main contrib non-free" >> /etc/apt/sources.list
-echo "deb-src http://mirrors.ustc.edu.cn/debian/ bullseye-backports main contrib non-free" >> /etc/apt/sources.list
-
 apt-get update
 apt-get upgrade -y
 
