@@ -281,7 +281,7 @@ systemctl mask NetworkManager-wait-online.service
 rm /lib/systemd/system/wpa_supplicant@.service
 
 #-------ASUS customization start-------
-echo $VERSION_NUMBER-$VERSION > /etc/version
+echo $VERSION_NUMBER > /etc/version
 
 # Install thunar-volman and auto mount storage
 cp /etc/ASUS/thunar-volman.xml /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/thunar-volman.xml
