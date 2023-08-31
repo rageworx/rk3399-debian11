@@ -186,6 +186,8 @@ now="$(date +'%Y%m%d_%H%M')"
 logfile2="/dev/kmsg"
 high_performance
 
+ps -ef | grep Thunar -i | awk '{print $2}' | xargs kill > /dev/null 2>&1
+
 case $test_item in
 	1)
 		check_system_status=true
