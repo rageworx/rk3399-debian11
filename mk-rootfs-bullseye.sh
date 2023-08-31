@@ -306,7 +306,7 @@ update-alternatives --auto x-terminal-emulator
 # Test tool
 if [ "$VERSION" == "debug" ]; then
 	systemctl enable test.service
-	sed -i -e 's/x-shellscript=vim.desktop/x-shellscript=debian-uxterm.desktop/g' /usr/share/applications/mimeinfo.cache
+	sed -i -e 's/x-shellscript=vim.desktop/x-shellscript=xfce4-terminal-emulator.desktop/g' /usr/share/applications/mimeinfo.cache
 fi
 
 #-------ASUS customization end-------
