@@ -231,6 +231,10 @@ echo -e "\033[36m move rknpu2.................... \033[0m"
 mv /packages/rknpu2/*.tar  /
 fi
 
+#-----------------modemmanager-------
+echo -e "\033[36m Install modemmanager................ \033[0m"
+\${APT_INSTALL} /packages/modemmanager/*.deb
+
 #------------------rktoolkit------------
 echo -e "\033[36m Install rktoolkit.................... \033[0m"
 \${APT_INSTALL} /packages/rktoolkit/*.deb
