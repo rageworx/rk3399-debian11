@@ -113,6 +113,7 @@ sed -i "s~\(^ExecStart=.*\)~# \1\nExecStart=-/bin/sh -c '/bin/bash -l </dev/%I >
 #---------------power management --------------
 #\${APT_INSTALL} pm-utils triggerhappy bsdmainutils
 #cp /etc/Powermanager/triggerhappy.service  /lib/systemd/system/triggerhappy.service
+sed -i "s/#HandlePowerKey=.*/HandlePowerKey=ignore/" /etc/systemd/logind.conf
 
 #---------------Audio---------------
 chmod 755 /etc/pulse/movesinks.sh
@@ -136,7 +137,6 @@ gstreamer1.0-plugins-base-apps qtmultimedia5-examples
 \${APT_INSTALL} /packages/gst-plugins-bad1.0/*.deb
 \${APT_INSTALL} /packages/gst-plugins-good1.0/*.deb
 \${APT_INSTALL} /packages/gst-plugins-ugly1.0/*.deb
-\${APT_INSTALL} /packages/gst-libav1.0/*.deb
 
 #---------Camera---------
 echo -e "\033[36m Install camera.................... \033[0m"
@@ -238,6 +238,10 @@ echo -e "\033[36m Install modemmanager................ \033[0m"
 #------------------rktoolkit------------
 echo -e "\033[36m Install rktoolkit.................... \033[0m"
 \${APT_INSTALL} /packages/rktoolkit/*.deb
+
+#------------------gl4es------------
+echo -e "\033[36m Install gl4es.................... \033[0m"
+\${APT_INSTALL} /packages/gl4es/*.deb
 
 echo -e "\033[36m Install Chinese fonts.................... \033[0m"
 # Uncomment zh_CN.UTF-8 for inclusion in generation

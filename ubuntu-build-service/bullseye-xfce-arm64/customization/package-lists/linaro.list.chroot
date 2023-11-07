@@ -152,6 +152,8 @@ obconf
 onboard
 openssh-client
 openssh-server
+#parole
+#parole-dev
 parted
 pavucontrol
 pm-utils

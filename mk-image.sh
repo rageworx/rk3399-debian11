@@ -9,7 +9,7 @@ IMAGE_SIZE_MB=$(( $(sudo du -sh -m ${TARGET_ROOTFS_DIR} | cut -f1) + ${EXTRA_SIZ
 echo Making rootfs!
 
 if [ -e ${ROOTFSIMAGE} ]; then
-	rm ${ROOTFSIMAGE}
+	sudo rm ${ROOTFSIMAGE}
 fi
 
 for script in ./post-build.sh ../device/rockchip/common/post-build.sh; do
@@ -17,8 +17,6 @@ for script in ./post-build.sh ../device/rockchip/common/post-build.sh; do
 	sudo $script "$(realpath "$TARGET_ROOTFS_DIR")"
 done
 
-dd if=/dev/zero of=${ROOTFSIMAGE} bs=1M count=0 seek=${IMAGE_SIZE_MB}
-
-sudo mkfs.ext4 -d ${TARGET_ROOTFS_DIR} ${ROOTFSIMAGE}
+sudo mkfs.ext4 -d ${TARGET_ROOTFS_DIR} ${ROOTFSIMAGE} ${IMAGE_SIZE_MB}M
 
 echo Rootfs Image: ${ROOTFSIMAGE}
