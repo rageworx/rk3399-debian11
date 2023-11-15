@@ -29,12 +29,6 @@ if [ ! -e linaro-bullseye-$ARCH.tar.gz ]; then
 	exit -1
 fi
 
-finish() {
-	sudo umount $TARGET_ROOTFS_DIR/dev
-	exit -1
-}
-trap finish ERR
-
 echo -e "\033[36m Extract image \033[0m"
 sudo tar -xpf linaro-bullseye-$ARCH.tar.gz
 
@@ -66,26 +60,12 @@ sudo cp -rf overlay-debug/usr/local/share/gpio_lib_python_rk3399 $TARGET_ROOTFS_
 sudo rm -rf $TARGET_ROOTFS_DIR/usr/local/share/mraa
 sudo cp -rf overlay-debug/usr/local/share/mraa $TARGET_ROOTFS_DIR/usr/local/share/mraa
 
-# bt/wifi firmware
-sudo mkdir -p $TARGET_ROOTFS_DIR/system/lib/modules/
-sudo mkdir -p $TARGET_ROOTFS_DIR/vendor/etc
-
-#sudo find ../kernel/drivers/net/wireless/rockchip_wlan/*  -name "*.ko" | \
-#    xargs -n1 -i sudo cp {} $TARGET_ROOTFS_DIR/system/lib/modules/
-
 # ASUS: Change to copy all the kernel modules built from build.sh.
 sudo cp -rf lib_modules/lib/modules $TARGET_ROOTFS_DIR/lib/
 
 echo -e "\033[36m Change root.....................\033[0m"
-if [ "$ARCH" == "armhf" ]; then
-	sudo cp /usr/bin/qemu-arm-static $TARGET_ROOTFS_DIR/usr/bin/
-elif [ "$ARCH" == "arm64"  ]; then
-	sudo cp /usr/bin/qemu-aarch64-static $TARGET_ROOTFS_DIR/usr/bin/
-fi
 
 #sudo cp -f /etc/resolv.conf $TARGET_ROOTFS_DIR/etc/
-
-sudo mount -o bind /dev $TARGET_ROOTFS_DIR/dev
 
 ID=$(stat --format %u $TARGET_ROOTFS_DIR)
 
@@ -101,9 +81,6 @@ done
 
 apt-get update
 apt-get upgrade -y
-
-chmod o+x /usr/lib/dbus-1.0/dbus-daemon-launch-helper
-chmod +x /etc/rc.local
 
 export APT_INSTALL="apt-get install -fy --allow-downgrades"
 
@@ -240,8 +217,8 @@ echo -e "\033[36m Install rktoolkit.................... \033[0m"
 \${APT_INSTALL} /packages/rktoolkit/*.deb
 
 #------------------gl4es------------
-echo -e "\033[36m Install gl4es.................... \033[0m"
-\${APT_INSTALL} /packages/gl4es/*.deb
+# echo -e "\033[36m Install gl4es.................... \033[0m"
+# \${APT_INSTALL} /packages/gl4es/*.deb
 
 echo -e "\033[36m Install Chinese fonts.................... \033[0m"
 # Uncomment zh_CN.UTF-8 for inclusion in generation
@@ -348,5 +325,3 @@ rm -rf /var/cache/
 rm -rf /packages/
 
 EOF
-
-sudo umount $TARGET_ROOTFS_DIR/dev
