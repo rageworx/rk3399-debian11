@@ -69,6 +69,11 @@ echo -e "\033[36m Change root.....................\033[0m"
 
 ID=$(stat --format %u $TARGET_ROOTFS_DIR)
 
+sudo mount -t proc /proc $TARGET_ROOTFS_DIR/proc
+sudo mount -t sysfs /sys $TARGET_ROOTFS_DIR/sys
+sudo mount -o bind /dev $TARGET_ROOTFS_DIR/dev
+sudo mount -o bind /dev/pts $TARGET_ROOTFS_DIR/dev/pts
+
 cat << EOF | sudo chroot $TARGET_ROOTFS_DIR
 
 # Fixup owners
@@ -325,3 +330,8 @@ rm -rf /var/cache/
 rm -rf /packages/
 
 EOF
+
+sudo umount $TARGET_ROOTFS_DIR/dev/pts
+sudo umount $TARGET_ROOTFS_DIR/dev
+sudo umount $TARGET_ROOTFS_DIR/sys
+sudo umount $TARGET_ROOTFS_DIR/proc
