@@ -16,6 +16,7 @@ bsdmainutils
 bash-completion
 bc
 binfmt-support
+binutils
 bluez
 blueman
 build-essential
@@ -127,6 +128,7 @@ lsof
 #lxshortcut
 #lxtask
 makedev
+manpages-dev
 mawk
 mesa-utils
 mesa-utils-extra
