@@ -206,11 +206,12 @@ echo -e "\033[36m Install glmark2.................... \033[0m"
 \${APT_INSTALL} /packages/glmark2/*.deb
 fi
 
+
 if [ -e "/usr/lib/aarch64-linux-gnu" ] ;
 then
 #------------------rknpu2------------
 echo -e "\033[36m move rknpu2.................... \033[0m"
-mv /packages/rknpu2/*.tar  /
+mv /packages/rknpu2/rknpu2.tar  /
 fi
 
 #-----------------modemmanager-------
@@ -232,13 +233,6 @@ echo -e "\033[36m Install Chinese fonts.................... \033[0m"
 
 # Generate locale
 #locale-gen
-
-# Export env vars
-#echo "export LC_ALL=zh_CN.UTF-8" >> ~/.bashrc
-#echo "export LANG=zh_CN.UTF-8" >> ~/.bashrc
-#echo "export LANGUAGE=zh_CN.UTF-8" >> ~/.bashrc
-
-source ~/.bashrc
 
 #\${APT_INSTALL} ttf-wqy-zenhei fonts-aenigma
 #\${APT_INSTALL} xfonts-intl-chinese
