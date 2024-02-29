@@ -298,6 +298,7 @@ if [ "$VERSION" == "debug" ]; then
 fi
 
 #-------ASUS customization end-------
+systemctl enable rkisp_3A.service
 
 #------remove unused packages------------
 apt remove --purge -fy linux-firmware*

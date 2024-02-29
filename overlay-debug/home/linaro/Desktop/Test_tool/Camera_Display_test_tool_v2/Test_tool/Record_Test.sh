@@ -39,19 +39,19 @@ else
 	v4l2-ctl -d /dev/video0 --set-fmt-video=width=2592,height=1944,pixelformat=NV12 --set-crop=top=0,left=0,width=2592,height=1944
 fi
 
-gst-launch-1.0 v4l2src device=$CSI0 ! video/x-raw,width=640,height=480 ! tee name=t t. ! queue ! autovideosink sync=false t. ! queue ! mpph264enc ! queue ! h264parse ! mpegtsmux ! filesink location=/tmp/Record_480p.ts &
+gst-launch-1.0 v4l2src device=$CSI0 ! video/x-raw,format=NV12,width=640,height=480 ! tee name=t t. ! queue ! autovideosink sync=false t. ! queue ! mpph264enc ! queue ! h264parse ! mpegtsmux ! filesink location=/tmp/Record_480p.ts &
 var=$!
 sleep 60
 kill -9 $var
 echo -e "$(date): Camera record Record_480p.avi" | tee -a $ResultFile
 
-gst-launch-1.0 v4l2src device=$CSI0 ! video/x-raw,width=1280,height=720 ! tee name=t t. ! queue ! autovideosink sync=false t. ! queue ! mpph264enc ! queue ! h264parse ! mpegtsmux ! filesink location=/tmp/Record_720p.ts &
+gst-launch-1.0 v4l2src device=$CSI0 ! video/x-raw,format=NV12,width=1280,height=720 ! tee name=t t. ! queue ! autovideosink sync=false t. ! queue ! mpph264enc ! queue ! h264parse ! mpegtsmux ! filesink location=/tmp/Record_720p.ts &
 var=$!
 sleep 60
 kill -9 $var
 echo -e "$(date): Camera record Record_720p.avi" | tee -a $ResultFile
 
-gst-launch-1.0 v4l2src device=$CSI0 ! video/x-raw,width=1920,height=1088 ! tee name=t t. ! queue ! autovideosink sync=false t. ! queue ! mpph264enc ! queue ! h264parse ! mpegtsmux ! filesink location=/tmp/Record_1080p.ts &
+gst-launch-1.0 v4l2src device=$CSI0 ! video/x-raw,format=NV12,width=1920,height=1088 ! tee name=t t. ! queue ! autovideosink sync=false t. ! queue ! mpph264enc ! queue ! h264parse ! mpegtsmux ! filesink location=/tmp/Record_1080p.ts &
 var=$!
 sleep 60
 kill -9 $var
