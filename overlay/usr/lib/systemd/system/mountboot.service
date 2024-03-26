@@ -1,6 +1,6 @@
 #start
 [Unit]
-Description=mount /dev/mmcblkp7 partition
+Description=mount /dev/mmcblkp8 partition
 Before=lightdm.service
 After=systemd-remount-fs.service
 
