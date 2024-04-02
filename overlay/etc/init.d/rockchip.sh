@@ -151,6 +151,9 @@ if [ -e /usr/lib/systemd/system/rkisp_3A.service ]; then
 elif [ -e /usr/lib/systemd/system/rkaiq_3A.service ]; then
     systemctl restart rkaiq_3A.service || true
 fi
+
+    systemctl restart ssh
+
     touch /usr/local/first_boot_flag
 
 fi
