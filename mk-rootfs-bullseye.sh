@@ -90,7 +90,7 @@ apt-get upgrade -y
 export APT_INSTALL="apt-get install -fy --allow-downgrades"
 
 # enter root username without password
-sed -i "s~\(^ExecStart=.*\)~# \1\nExecStart=-/bin/sh -c '/bin/bash -l </dev/%I >/dev/%I 2>\&1'~" /usr/lib/systemd/system/serial-getty@.service
+#sed -i "s~\(^ExecStart=.*\)~# \1\nExecStart=-/bin/sh -c '/bin/bash -l </dev/%I >/dev/%I 2>\&1'~" /usr/lib/systemd/system/serial-getty@.service
 
 #---------------power management --------------
 #\${APT_INSTALL} pm-utils triggerhappy bsdmainutils
