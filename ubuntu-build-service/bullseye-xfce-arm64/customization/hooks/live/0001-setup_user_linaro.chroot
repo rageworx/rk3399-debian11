@@ -5,3 +5,5 @@ adduser --gecos linaro --disabled-login linaro
 
 echo "I: set linaro user password"
 echo "linaro:linaro" | chpasswd
+
+passwd --expire linaro
