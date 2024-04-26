@@ -301,6 +301,9 @@ fi
 sed -i "s|^autologin-user=.*|#autologin-user=linaro|" /etc/lightdm/lightdm.conf
 sed -i "s|^autologin-user-timeout=.*|#autologin-user-timeout=0|" /etc/lightdm/lightdm.conf
 
+# Fix lock screen disappear
+\${APT_INSTALL} light-locker
+
 #-------ASUS customization end-------
 systemctl enable rkisp_3A.service
 
