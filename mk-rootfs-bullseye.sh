@@ -25,7 +25,7 @@ fi
 echo -e "\033[36m Building for $VERSION \033[0m"
 
 if [ ! -e linaro-bullseye-$ARCH.tar.gz ]; then
-	echo "\033[36m Run mk-base-debian.sh first \033[0m"
+	echo -e "\033[36m Run mk-base-debian.sh first \033[0m"
 	exit -1
 fi
 

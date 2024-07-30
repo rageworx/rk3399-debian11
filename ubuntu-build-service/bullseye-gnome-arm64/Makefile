@@ -7,9 +7,10 @@
 
 # You need live-build package installed and superuser privileges.
 
+DTSTR=$(shell date +%Y%m%d)
 BUILD_NUMBER?=1
 BASEIMG=linaro-bullseye-alip-arm64
-IMAGEPREFIX=$(BASEIMG)-`date +%Y%m%d`-$(BUILD_NUMBER)
+IMAGEPREFIX=$(BASEIMG)-$(DTSTR)-$(BUILD_NUMBER)
 LOGFILE=$(IMAGEPREFIX).build-log.txt
 CONFIGFILE=$(IMAGEPREFIX).config.tar.bz2
 LISTFILE=$(IMAGEPREFIX).contents

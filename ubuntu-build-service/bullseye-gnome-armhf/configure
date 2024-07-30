@@ -31,6 +31,7 @@ lb config \
  --cache false \
  --chroot-filesystem none \
  --compression gzip \
+ --debootstrap-options "--variant=minbase --include=apt-transport-https,gnupg" \
  --distribution bullseye \
  --gzip-options '-9 --rsyncable' \
  --iso-publisher 'Linaro; http://www.linaro.org/; linaro-dev@lists.linaro.org' \
@@ -39,7 +40,8 @@ lb config \
  --linux-packages none \
  --mode debian \
  --security true \
- --system normal
+ --system normal \
+ --updates true
 
 echo "I: copy customization"
 test -d customization && cp -rf customization/* config/

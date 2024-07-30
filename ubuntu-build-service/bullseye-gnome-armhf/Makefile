@@ -7,9 +7,10 @@
 
 # You need live-build package installed and superuser privileges.
 
+DTSTR=$(shell date +%Y%m%d)
 BUILD_NUMBER?=1
-BASEIMG=linaro-bullseye-alip-armhf
-IMAGEPREFIX=$(BASEIMG)-`date +%Y%m%d`-$(BUILD_NUMBER)
+BASEIMG=linaro-bullseye-alip-arm64
+IMAGEPREFIX=$(BASEIMG)-$(DTSTR)-$(BUILD_NUMBER)
 LOGFILE=$(IMAGEPREFIX).build-log.txt
 CONFIGFILE=$(IMAGEPREFIX).config.tar.bz2
 LISTFILE=$(IMAGEPREFIX).contents
@@ -24,7 +25,7 @@ all:
 	tar -jcf $(CONFIGFILE) auto/ config/ configure;
 	sudo mv chroot.files $(LISTFILE);
 	sudo mv chroot.packages.live $(PKGSFILE);
-	sudo mv live-image-armhf.tar.tar.gz $(TARGZFILE);
+	sudo mv live-image-arm64.tar.tar.gz $(TARGZFILE);
 	md5sum $(LOGFILE) $(CONFIGFILE) $(LISTFILE) $(PKGSFILE) $(TARGZFILE) > $(MD5SUMSFILE);
 	sha1sum $(LOGFILE) $(CONFIGFILE) $(LISTFILE) $(PKGSFILE) $(TARGZFILE) > $(SHA1SUMSFILE);
 
