@@ -24,13 +24,16 @@ fi
 
 echo -e "\033[36m Building for $VERSION \033[0m"
 
-if [ ! -e linaro-bullseye-$ARCH.tar.gz ]; then
+# find first file 
+IMGSRC=`ls -c1 linaro-bullseye-alip-$ARCH-*.tar.gz`
+
+if [ ! -e $IMGSRC ]; then
 	echo -e "\033[36m Run mk-base-debian.sh first \033[0m"
 	exit -1
 fi
 
 echo -e "\033[36m Extract image \033[0m"
-sudo tar -xpf linaro-bullseye-$ARCH.tar.gz
+sudo tar -xpf $IMGSRC
 
 # packages folder
 sudo mkdir -p $TARGET_ROOTFS_DIR/packages
@@ -60,8 +63,10 @@ sudo cp -rf overlay-debug/usr/local/share/gpio_lib_python_rk3399 $TARGET_ROOTFS_
 sudo rm -rf $TARGET_ROOTFS_DIR/usr/local/share/mraa
 sudo cp -rf overlay-debug/usr/local/share/mraa $TARGET_ROOTFS_DIR/usr/local/share/mraa
 
-# ASUS: Change to copy all the kernel modules built from build.sh.
-sudo cp -rf lib_modules/lib/modules $TARGET_ROOTFS_DIR/lib/
+if [ -e lib_modules ];then
+    # ASUS: Change to copy all the kernel modules built from build.sh.
+    sudo cp -rf lib_modules/lib/modules $TARGET_ROOTFS_DIR/lib/
+fi
 
 echo -e "\033[36m Change root.....................\033[0m"
 
