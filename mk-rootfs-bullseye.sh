@@ -63,8 +63,8 @@ sudo cp -rf overlay-debug/usr/local/share/gpio_lib_python_rk3399 $TARGET_ROOTFS_
 sudo rm -rf $TARGET_ROOTFS_DIR/usr/local/share/mraa
 sudo cp -rf overlay-debug/usr/local/share/mraa $TARGET_ROOTFS_DIR/usr/local/share/mraa
 
+# Change to copy all the kernel modules built from build.sh.
 if [ -e lib_modules ];then
-    # ASUS: Change to copy all the kernel modules built from build.sh.
     sudo cp -rf lib_modules/lib/modules $TARGET_ROOTFS_DIR/lib/
 fi
 
@@ -269,7 +269,6 @@ systemctl mask systemd-networkd-wait-online.service
 systemctl mask NetworkManager-wait-online.service
 rm /lib/systemd/system/wpa_supplicant@.service
 
-#-------ASUS customization start-------
 # Switching iptables/ip6tables to the legacy version
 update-alternatives --set iptables /usr/sbin/iptables-legacy
 update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
@@ -277,7 +276,7 @@ update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
 echo $VERSION_NUMBER > /etc/version
 
 # Install thunar-volman and auto mount storage
-cp /etc/ASUS/thunar-volman.xml /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/thunar-volman.xml
+cp /etc/Tiner/thunar-volman.xml /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/thunar-volman.xml
 
 #---------------tinker-power-management--------------
 #\${APT_INSTALL} libncurses5-dev libncursesw5-dev
@@ -287,10 +286,6 @@ mv tinker-power-management /usr/bin
 cd /
 
 systemctl enable mountboot.service
-
-# Change the background for ASUS Tinker Board
-rm -rf /usr/share/images/desktop-base/default
-ln -s /etc/ASUS/ASUS-2017-Tinkerboard-v1-wp-02-1920x1080.jpg /usr/share/images/desktop-base/default
 
 # Change default Terminal emulator to xfce4-terminal
 sudo update-alternatives --install /usr/bin/x-terminal-emulator x-terminal-emulator /usr/bin/xfce4-terminal 40
@@ -309,7 +304,6 @@ sed -i "s|^autologin-user-timeout=.*|#autologin-user-timeout=0|" /etc/lightdm/li
 # Fix lock screen disappear
 \${APT_INSTALL} light-locker
 
-#-------ASUS customization end-------
 systemctl enable rkisp_3A.service
 
 #------remove unused packages------------
