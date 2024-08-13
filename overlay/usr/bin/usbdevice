@@ -78,19 +78,6 @@ usb_pid()
 	esac
 }
 
-usb_vid()
-{
-	case "$(echo $USB_FUNCS | xargs -n 1 | sort | paste -sd'-')" in
-		ums)		echo 0x0b05;;
-		mtp)		echo 0x0b05;;
-		adb)		echo 0x0b05;;
-		adb-mtp)	echo 0x0b05;;
-		rndis)		echo 0x0b05;;
-		adb-rndis)	echo 0x0b05;;
-		*)		echo 0x2207;;
-	esac
-}
-
 usb_instances()
 {
 	for func in $@; do
@@ -474,7 +461,7 @@ usb_init()
 	SERIAL=$(grep Serial /proc/cpuinfo | cut -d':' -f2)
 	echo ${SERIAL:-0123456789ABCDEF} > $USB_GADGET_STRINGS_DIR/serialnumber
 	echo $USB_GROUP  > $USB_GADGET_STRINGS_DIR/manufacturer
-	echo "Tinker Board 2"  > $USB_GADGET_STRINGS_DIR/product
+	echo "rk3399"  > $USB_GADGET_STRINGS_DIR/product
 
 	mkdir -p $USB_CONFIGS_DIR
 	echo 500 > $USB_CONFIGS_DIR/MaxPower
