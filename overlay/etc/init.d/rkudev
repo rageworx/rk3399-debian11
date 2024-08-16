@@ -1,19 +1,14 @@
 #!/bin/bash
 ### BEGIN INIT INFO
-# Provides:          adbd
+# Provides:          rkudev
 # Required-Start:
 # Required-Stop:
 # Default-Start: S
 # Default-Stop: 6
 # Short-Description:
-# Description:       Linux ADB
+# Description:       rkudev service controller.
 ### END INIT INFO
 
-# setup configfs for adbd, usb mass storage and MTP....
-
-UMS_EN=off
-ADB_EN=off
-MTP_EN=off
 RKUDEV_EN=off
 
 # default VID is rockchip
@@ -21,12 +16,19 @@ VID=0x2207
 PID=0x0009
 
 # rkudev configs.
-USN="0000000000000000"
+DEFAULT_USN="0000000000000000"
+USN=$(grep Serial /proc/cpuinfo | cut -d':' -f2)
 VNAME="Rockchip"
 PNAME="RKUDEV"
 BUSMA=500
 RKUDEVBASE=/sys/kernel/config/usb_gadget/rockchip
-RKUDEVFPATH=$RKUDEVBASE/functions/rkudev.1
+RKUDEVFPATH=$RKUDEVBASE/functions/rkudev.gs0
+RKUDEVSYM=$RKUDEVBASE/configs/b.1/f-rkudev.gs0
+
+if [ ! -e $RKUDEVFPATH ];then
+	RKUDEVPATH=$RKUDEVBASE/functions/rkudev.1
+	RKUDEVSYM=$RKUDEVBASE/configs/b.1/rkudev.1
+fi
 
 make_config_string()
 {
@@ -38,23 +40,31 @@ make_config_string()
 	fi
 }
 
+force_write()
+{
+    for ((cnt=0; cnt<3; cnt++)); do
+        TEST_V=`cat $1`
+        if [[ "$TEST_V" != "$2" ]]; then
+            chmod 666 $1
+            echo $2 > $1
+            chmod 644 $1
+            sleep 0.25
+        else
+            break
+        fi
+    done
+
+	TEST_V=`cat $1`
+	if [[ "$TEST_V" != "$2" ]]; then
+		echo "Failed to set $1 to $2"
+	fi
+}
+
 parameter_init()
 {
 	while read line
 	do
 		case "$line" in
-			usb_mtp_en)
-				MTP_EN=on
-				make_config_string mtp
-				;;
-			usb_adb_en)
-				ADB_EN=on
-				make_config_string adb
-				;;
-			usb_ums_en)
-				UMS_EN=on
-				make_config_string ums
-				;;
             usb_rkudev_en)
                 RKUDEV_EN=on
                 make_config_string rkudev
@@ -62,27 +72,11 @@ parameter_init()
 		esac
 	done < $DIR/.usb_config
 
-
 	case "$CONFIG_STRING" in
-		ums)
-			PID=0x0000
-			;;
-		mtp)
-			PID=0x0001
-			;;
-		adb)
-			PID=0x0006
-			;;
         rkudev)
-            PID=0x0009
+            PID=0x001a
             ;;
-		mtp_adb | adb_mtp)
-			PID=0x0011
-			;;
-		ums_adb | adb_ums)
-			PID=0x0018
-			;;
-		*)
+        *)
 			PID=0x0019
 	esac
 }
@@ -92,7 +86,8 @@ apply_vidpid()
     while true; do
         TEST_PID=`cat $RKUDEVBASE/idProduct`
         if [[ "$TEST_PID" != "$PID" ]]; then
-            echo $PID > $RKUDEVBASE/idProduct
+			echo "Writing PID $PID to $RKUDEVBASE/idProduct"
+			force_write $RKUDEVBASE/idProduct $PID
             sleep 0.25
         else
             break
@@ -102,20 +97,8 @@ apply_vidpid()
     while true; do
         TEST_VID=`cat $RKUDEVBASE/idVendor`
         if [[ "$TEST_VID" != "$VID" ]]; then
-            echo $VID > $RKUDEVBASE/idVendor
-            sleep 0.25
-        else
-            break
-        fi
-    done
-}
-
-force_write()
-{
-    for ((cnt=0; cnt<4; cnt++)); do
-        TEST_V=`cat $1`
-        if [[ "$TEST_V" != "$2" ]]; then
-            echo $2 > $1
+			echo "Writing VID $VID to $RKUDEVBASE/idVendro"
+            force_write $RKUDEVBASE/idVendor $VID
             sleep 0.25
         else
             break
@@ -143,7 +126,7 @@ configfs_init()
     force_write $RKUDEVBASE/strings/0x409/manufacturer $VNAME
 
     #echo "$PNAME" > $RKUDEVBASE/strings/0x409/product
-    force_write $RKUDEVBASE/strings/0x409/product $VNAME
+    force_write $RKUDEVBASE/strings/0x409/product $PNAME
 
     if [ ! -e $RKUDEVBASE/configs/b.1 ];then
         mkdir -p $RKUDEVBASE/configs/b.1 -m 0770
@@ -152,48 +135,26 @@ configfs_init()
         mkdir -p $RKUDEVBASE/configs/b.1/strings/0x409  -m 0770
     fi
     echo $BUSMA > $RKUDEVBASE/configs/b.1/MaxPower
-    echo \"$CONFIG_STRING\" > $RKUDEVBASE/configs/b.1/strings/0x409/configuration
+
+    if [ -e $RKUDEVBASE/configs/b.1/strings/0x409/configuration ];then
+    	echo \"$CONFIG_STRING\" > $RKUDEVBASE/configs/b.1/strings/0x409/configuration
+	fi
 }
 
 function_init()
 {
-	if [ $UMS_EN = on ];then
-		if [ ! -e "$RKUDEVBASE/functions/mass_storage.0" ] ;
-		then
-			mkdir -p $RKUDEVBASE/functions/mass_storage.0
-			echo /dev/disk/by-partlabel/userdata > $RKUDEVBASE/functions/mass_storage.0/lun.0/file
-			ln -s $RKUDEVBASE/functions/rockchip/mass_storage.0 $RKUDEVBASE/configs/b.1/mass_storage.0
+	mkdir -p $RKUDEVFPATH
+	if [ -e $RKUDEVFPATH ]; then
+		if [ ! -e $RKUDEVSYM ]; then
+			ln -s $RKUDEVFPATH $RKUDEVSYM
 		fi
+	else
+		echo "Warning : $RKUDEVFPATH not createn."
 	fi
-
-	if [ $ADB_EN = on ];then
-		if [ ! -e "$RKUDEVBASE/functions/ffs.adb" ] ;
-		then
-			mkdir -p $RKUDEVBASE/functions/ffs.adb
-			ln -s $RKUDEVBASE/functions/ffs.adb $RKUDEVBASE/configs/b.1/ffs.adb
-		fi
-	fi
-
-	if [ $MTP_EN = on ];then
-		if [ ! -e "mkdir -p $RKUDEVBASE/functions/mtp.gs0" ] ;
-		then
-			mkdir -p $RKUDEVBASE/functions/mtp.gs0
-			ln -s $RKUDEVBASE/functions/mtp.gs0 $RKUDEVBASE/configs/b.1/mtp.gs0
-		fi
-	fi
-
-    if [ $RKUDEV_EN = on ];then
-        mkdir -p $RKUDEVFPATH
-        if [ -e $RKUDEVFPATH ]; then
-            ln -s $RKUDEVFPATH $RKUDEVBASE/configs/b.1/rkudev.1
-        else
-            echo "Warning : $RKUDEVFPATH not createn."
-        fi
-    fi
 }
 
 case "$1" in
-start)
+start|restart|reload)
 	DIR=$(cd `dirname $0`; pwd)
 	if [ ! -e "$DIR/.usb_config" ]; then
 		echo "$0: Cannot find .usb_config"
@@ -208,28 +169,9 @@ start)
 	configfs_init
 	function_init
 
-	if [ $ADB_EN = on ];then
-		if [ ! -e "/dev/usb-ffs/adb" ] ;
-		then
-			mkdir -p /dev/usb-ffs/adb
-			mount -o uid=2000,gid=2000 -t functionfs adb /dev/usb-ffs/adb
-		fi
-		export service_adb_tcp_port=5555
-		start-stop-daemon --start --oknodo --pidfile /var/run/adbd.pid --startas /usr/local/bin/adbd --background
-		sleep 1
-	fi
-
-    if [ $RKUDEV_EN = on ];then
-        sleep 1 && echo "rkudev configured."&
+	if [ $RKUDEV_EN = on ];then
+        sleep 1 && echo "rkudev configured."
     fi
-
-	if [ $MTP_EN = on ];then
-		if [ $MTP_EN = on ]; then
-			mtp-server&
-		else
-			sleep 1 && mtp-server&
-		fi
-	fi
 
 	UDC=`ls /sys/class/udc/| awk '{print $1}'`
 	#echo $UDC > $RKUDEVBASE/UDC
@@ -237,11 +179,6 @@ start)
 	;;
 stop)
 	echo "none" > $RKUDEVBASE/UDC
-	if [ $ADB_EN = on ];then
-		start-stop-daemon --stop --oknodo --pidfile /var/run/adbd.pid --retry 5
-	fi
-	;;
-restart|reload)
 	;;
 *)
 	echo "Usage: $0 {start|stop|restart}"
