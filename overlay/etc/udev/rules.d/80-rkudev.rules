@@ -1,0 +1,2 @@
+# RKUDEV device permission control
+KERNEL=="rkudev*", MODE:="0666", OWNER:="root", GROUP:="root"
